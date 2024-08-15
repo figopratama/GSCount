@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Pengujian</title>
+</head>
+
+<!-- <p>The queryset object:</p>
+{{ date }}
+
+<p>Loop through the items:</p>
+
+<table border='1'>
+  <tr>
+    <th>Clicks</th>
+    <th>Impressions</th>
+    <th>Ranking</th>
+    <th>Ranking</th>
+  </tr>
+  {% for x in date %}
+    <tr>
+      <td>{{ x.Clicks }}</td>
+      <td>{{ x.Impressions }}</td>
+      <td>{{ x.Ranking }}</td>
+      <td>{{ x.Ranking }}</td>
+    </tr>
+  {% endfor %}
+</table> -->
+
+<p>The queryset object:</p>
+{{ hasil_uji }}
+
+<p>Loop through the items:</p>
+
+<table border='1'>
+  <tr>
+    <th>ADF Statistics</th>
+    <th>P-Value</th>
+    <th>Critical Value</th>
+  </tr>
+  {% for x in hasil_uji %}
+    <tr>
+      <td>{{ x.stat }}</td>
+      <td>{{ x.value }}</td>
+      <td>{{ x.crit }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+</html>

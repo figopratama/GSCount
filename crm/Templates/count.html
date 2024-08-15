@@ -1,0 +1,167 @@
+<!-- run_adfuller.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADF Test Results</title>
+    <style>
+        h1{
+            text-align: center;
+            padding-bottom: 50px;
+        }
+        .left, .right {
+            width: 50%;
+        }
+        .left {
+            text-align: left;
+        }
+        .right {
+            text-align: center;
+            padding: 20px; 
+        }
+        .container {
+            display: flex;
+            width: 80%;
+            margin: 0 auto;
+            margin-bottom: 20px; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        p{
+            padding-left: 20px;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+
+    <h3 align="center">
+        Please Upload CSV File
+    </h3>
+    <hr>
+    <br>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        Select File: <input type="file" name="myfile">
+        <button type="submit">Upload File</button>
+    </form>
+    <br>
+    <hr>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+        <p{% if message.tags %} class="" {%  endif %}>{{ message }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <h1>ADF Test Results</h1>
+    <!-- UJI STASIONERITAS -->
+    <div class="container">
+        <div class="left">
+            {% if results %}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>ADF Statistic</th>
+                        <th>p-value</th>
+                        <!-- <th>Critical Value 1%</th>
+                        <th>Critical Value 5%</th>
+                        <th>Critical Value 10%</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                        <tr>
+                            <td>{{ result.variable_name }}</td>
+                            <td>{{ result.adf_statistic }}</td>
+                            <td>{{ result.p_value }}</td>
+                            <!-- <td>{{ result.critical_values_1 }}</td>
+                            <td>{{ result.critical_values_5 }}</td>
+                            <td>{{ result.critical_values_10 }}</td> -->
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <pwarn>No results to display.</pwarn>
+            {% endif %}
+        </div>
+        <div class="right">
+            <h3>1. Uji Stasioner</h3>
+            <p>
+                Uji Stasioner berfungsi untuk menguji stasioneritas variabel dengan mencari P-Value-nya.
+                Apabila P-Value < 5% atau 0.05, maka variabel tersebut dapat dinyatakan stasioner.
+            </p>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <!-- UJI LAG OPTIMUM -->
+    <div class="container">
+        <div class="left">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Clicks</th>
+                        <th>Lagged Clicks</th>
+                        <th>Impressions</th>
+                        <th>Lagged Impressions</th>
+                        <th>Ranking</th>  
+                        <th>Lagged Ranking</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in lagged_data %}
+                        <tr>
+                            <td>{{ item.Clicks }}</td>
+                            <td>{{ item.lag1_dclicks }}</td>
+                            <td>{{ item.Impressions }}</td>
+                            <td>{{ item.lag1_dimpressions }}</td>
+                            <td>{{ item.Ranking }}</td>                         
+                            <td>{{ item.lag1_dranking }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="right">
+            <h3>2. Uji Lag Optimum</h3>
+            <p>
+                Seperti namanya, uji lag optimum berfungsi untuk mencari lag yang paling optimal sebagai acuan untuk digunakan pada pengujian selanjutnya.
+                Pencarian lag optimal dilakukan pada tiap variabel tanpa terkecuali. </p>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <!-- UJI REGRESI -->
+    <div class="container">
+        <div class="left">
+            {{ summary_html|safe }}
+        </div>
+        <div class="right">
+            <h3>3. Uji Regresi</h3>
+            <p>
+                Uji Regresi digunakan untuk mencari pengaruh jangka panjang dan jangka pendek dari suatu variabel pada periode waktu tertentu dengan menggunakan lag optimum dari variabel dependen.
+                Untuk mengukur pengaruh jangka pendeknya, kami menggunakan variabel Clicks. </p>
+        </div>
+    </div>
+</body>
+</html>

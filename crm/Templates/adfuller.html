@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>The queryset object:</p>
+{{ date }}
+
+<p>Loop through the items:</p>
+
+<table border='1'>
+  <tr>
+    <th>Clicks</th>
+    <th>Impressions</th>
+    <th>Ranking</th>
+  </tr>
+  {% for x in date %}
+    <tr>
+      <td>{{ x.Clicks }}</td>
+      <td>{{ x.Impressions }}</td>
+      <td>{{ x.Ranking }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+<table border='1'>
+  <tr>
+    <th>ADF Statistics</th>
+    <th>P-Value</th>
+    <th>Crit</th>
+  </tr>
+  {% for x in date %}
+    <tr>
+      <td>{{ x.stat }}</td>
+      <td>{{ x.p }}</td>
+      <td>{{ x.crit }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+</body>
+</html>                  

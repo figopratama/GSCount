@@ -1,0 +1,495 @@
+{% extends 'base.html' %}
+
+{% block title %}
+GSCount
+{% endblock %}
+
+
+
+{% block content %}
+    <style>
+        h1{
+            text-align: center;
+            padding-bottom: 50px;
+        }
+        h2{
+            text-align: left;
+            padding-left: 20px;
+            padding-bottom: 25px;
+        }
+        h3{
+            text-align: center;
+            padding-bottom: 25px;
+        }
+        .left, .right {
+            width: 50%;
+        }
+        .left {
+            text-align: left;
+            margin-right: 30px;
+        }
+        .right {
+            text-align: left;
+            margin-left: 0cm; 
+        }
+        .right li {
+            list-style-type: disc;
+            text-align: justify;
+            margin-left: 1rem;
+        }
+        .center {
+            width: 80%;
+            text-align: center;
+            margin: 10px auto;
+        }
+        .normalChart {
+            margin: 2cm auto;
+        }
+        .container {
+            display: flex;
+            width: 95%;
+            justify-content: space-between;
+            margin: 0 auto;
+            margin-bottom: 20px; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        p{
+            padding-left: 20px;
+            text-align: justify;
+        }
+        .bold-text {
+            text-align: center;
+            padding: 20px;
+            font-weight: bold;
+        }
+        .justify-text {
+            text-align: justify;
+        }
+        .final-conclusions {
+            text-align: justify;
+            padding: 20px;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+
+
+<!-- CSV FORM -->
+<div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+    <header class="bg-white shadow">
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900">Upload your CSV file!</h1>
+        </div>
+    </header>
+    <!-- CONTENT -->
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-6 rounded shadow-md w-96">
+            <form method="post" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label for="myfile" class="block text-sm font-medium text-gray-700">Select File:</label>
+                    <input type="file" name="myfile" id="myfile" class="mt-1 block w-full text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <button type="submit" class="w-full px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Upload File</button>
+                </div>
+            </form>
+
+            <form method="post" action="{% url 'delete_data' %}" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <button type="submit" class="w-full px-4 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">Delete All Data</button>
+                </div>
+            </form>
+            <br>
+            <hr>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                <p{% if message.tags %} class="" {%  endif %}>{{ message }}</p>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+{% if data_available %}
+    <!-- HASIL PENGUJIAN -->
+    <div class="bg-white">
+        <header class="bg-white shadow">
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900">Here's the results!</h1>
+            </div>
+        </header>
+    </div>
+
+    <!-- TABEL HASIL PENGUJIAN -->
+    <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+
+        <!-- UJI STASIONER -->
+        <header class="bg-white shadow-lg rounded-lg my-6">
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-extrabold tracking-tight text-black">Uji Stasioner</h2>
+                <p class="text-lg mb-2">
+                    Uji Stasioner berfungsi untuk menguji stasioneritas variabel dengan mencari P-Value-nya.
+                    Apabila P-Value &lt; 5% atau 0.05, maka variabel tersebut dapat dinyatakan stasioner.
+                </p>
+            </div>
+        </header>
+        
+        <div class="center">
+            {% if results %}
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>ADF Statistic</th>
+                            <th>p-value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                            <tr>
+                                <td>{{ result.variable_name }}</td>
+                                <td>{{ result.adf_statistic|floatformat:3 }}</td>
+                                <td>{{ result.p_value|floatformat:3}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <pwarn>No results to display.</pwarn>
+                {% endif %}
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <!-- UJI LAG OPTIMUM -->
+        <header class="bg-white shadow-lg rounded-lg my-6">
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-extrabold tracking-tight text-black">Uji Lag Optimum</h2>
+                <p class="text-lg mb-2">
+                    Seperti namanya, uji lag optimum berfungsi untuk mencari lag yang paling optimal sebagai acuan untuk digunakan pada pengujian selanjutnya.
+                    Pencarian lag optimal dilakukan pada tiap variabel tanpa terkecuali.
+                </p>
+            </div>
+        </header>
+
+        <div class="center">
+            {% if lagged_data %}
+            <div class="normalChart">
+                <canvas id="ClicksChart"></canvas>
+            </div>
+            <div class="normalChart">
+                <canvas id="ImpressionsChart"></canvas>
+            </div>
+            <div>
+                <canvas id="RankingChart"></canvas>
+            </div class="normalChart">
+            {% else %}
+                <pwarn>Not enough data for regression analysis</pwarn>
+            {% endif %}
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <!-- UJI REGRESI -->
+        <header class="bg-white shadow-lg rounded-lg my-6">
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-extrabold tracking-tight text-black">Uji Regresi</h2>
+                <p class="text-lg mb-2">
+                    Uji Regresi digunakan untuk mencari pengaruh jangka panjang dan jangka pendek dari suatu variabel pada periode waktu tertentu dengan menggunakan lag optimum dari variabel dependen.
+                    Untuk mengukur pengaruh jangka pendeknya, kami menggunakan variabel Clicks dan variabel CTR.
+                </p>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="left">
+                <h3 class="text-3Xl font-bold tracking-tight text-gray-900">Dependent Variable: CLICKS</h3>
+                {{ Clicks_sum|safe }}
+            </div>
+            <div class="right">
+                <h3 class="text-3Xl font-bold tracking-tight text-gray-900">Dependent Variable: CTR</h3>
+                {{ CTR_sum|safe }}
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- PENJELASAN KESIMPULAN AKHIR -->
+    <div class="bg-white text-gray-800">
+        <div id="analysis-result" class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="bg-white">
+                <header class="bg-white shadow">
+                    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                        <h1 class="text-3xl font-bold tracking-tight text-gray-900">Conclusions</h1>
+                    </div>
+                </header>
+            </div>
+
+
+            <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+
+                <!-- PENJELASAN KESIMPULAN AKHIR: Uji Stasioner -->
+                <div class="container">
+                    <div class="left">
+                        <h3 class="bold-text">UJI STASIONER</h3>
+                        <p>Pada tahap pertama yakni uji stasioner, variabel dinyatakan stasioner apabila nilai P-Value adalah kurang dari 5% atau 0.05.</p>
+                    </div>
+                    <div class="right">
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>Conclusions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for conclusion in conclusions_stationarity %}
+                                    <tr>
+                                        <td>
+                                        {{ conclusion }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="page-break"></div>
+
+                <!-- PENJELASAN KESIMPULAN AKHIR: Uji Lag Optimum -->
+                <div class="container">
+                    <div class="left">
+                        <h3 class="bold-text">UJI LAG OPTIMUM</h3>
+                        <p>Pada tahap ini, uji lag optimum bertujuan untuk mencari lag optimal dari tiap variabel yang nantinya akan digunakan pada tahap selanjutnya.</p>
+                    </div>
+                    <div class="right">
+                        {% if lagged_data %}
+                        <div>
+                            <canvas id="LaggedClicksChart"></canvas>
+                        </div>
+                        <div>
+                            <canvas id="LaggedImpressionsChart"></canvas>
+                        </div>
+                        <div>
+                            <canvas id="LaggedRankingChart"></canvas>
+                        </div>
+                        {% else %}
+                            <pwarn>Not enough data for regression analysis</pwarn>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="page-break"></div>
+
+                <!--PENJELASAN KESIMPULAN AKHIR: Uji Regresi -->
+                <div class="container">
+                    <div class="left">
+                        <h3 class="bold-text">UJI REGRESI</h3>
+                        <p class="justify-text">Tahap terakhir yaitu Uji Regresi. Indikator yang perlu diperhatikan yakni pada nilai Koefisien (coef) dan T-statistic (t).</p>
+                            <ul class="list-disc pl-6 justify-text">
+                                <p>Apabila coef bernilai positif (+) dan T-statistic bernilai positif (+), maka variabel dinyatakan signifikan terhadap variabel dependen.</p>
+                                <p>Apabila coef bernilai negatif (-) dan T-statistic bernilai positif (+), maka variabel dinyatakan signifikan terhadap variabel dependen.</p>
+                                <p>Apabila coef bernilai positif (+) dan T-statistic bernilai negatif (-), maka variabel dinyatakan tidak signifikan terhadap variabel dependen.</p>
+                                <p>Apabila coef bernilai negatif (-) dan T-statistic bernilai negatif (-), maka variabel dinyatakan tidak signifikan terhadap variabel dependen.</p>
+                            </ul>
+                    </div>
+                    <div class="right">
+                        <br><br><br>
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>Conclusions for Dep. Variable Clicks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <ul>
+                                            {% for conclusion in Clicks_conclusions %}
+                                                <li>{{ conclusion }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>Conclusions for Dep. Variable CTR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <ul>
+                                            {% for conclusion in CTR_conclusions %}
+                                                <li>{{ conclusion }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="page-break"></div>
+
+                <!--PENJELASAN KESIMPULAN AKHIR: Autoregressive Distributed Lag Test -->
+                <div class="center">
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Autoregressive Distributed Lag Test Conclusions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="mx-2">
+                                    <ul>
+                                        <li class="final-conclusions">Hasil pengujian regresi menggunakan metode Autoregressive Distributed Lag dapat disimpulkan bahwa hubungan jangka panjang variabel Clicks adalah valid.
+                                            Hasil analisis variabel 
+                                            {% for Final_conclusion in Clicks_finalconclusions %}
+                                                {{ Final_conclusion }}
+                                            {% endfor %} 
+                                            dalam jangka panjang baik pada variabel dependen Clicks berpengaruh positif dan signifikan terhadap kenaikan Jumlah Klik situs web anda di mesin pencari.
+                                        </li>
+                                        <li class="final-conclusions"> Hasil pengujian regresi menggunakan metode Autoregressive Distributed Lag dapat disimpulkan bahwa hubungan jangka panjang variabel CTR adalah valid.
+                                            Hasil analisis variabel
+                                            {% for Final_conclusion in CTR_finalconclusions %}
+                                                {{ Final_conclusion }}
+                                            {% endfor %} 
+                                            dalam jangka panjang pada variabel dependen CTR berpengaruh positif dan signifikan terhadap kenaikan Rataan CTR. Artinya, apabila anda berniat untuk meningkatkan penjualan(CTR), maka anda harus tingkatkan jumlah klik(Clicks) pengunjung.
+                                        </li>  
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Download PDF Button -->
+                <div class="text-right mt-6">
+                    <button id="download-pdf" class="px-4 py-2 bg-blue-500 text-white rounded-lg">Download PDF</button>
+                </div>
+            </div>
+        </div>  
+    </div>
+
+{% else %}
+    <p class="text-center text-red-500">No data available to display results.</p>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const laggedData = JSON.parse('{{ lagged_data|escapejs }}');
+        
+        const createChart = (ctx, label, data) => {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: data.length }, (_, i) => i + 1),
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Day'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: label
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        const clicksCtx = document.getElementById('ClicksChart').getContext('2d');
+        createChart(clicksCtx, 'Clicks', laggedData.map(item => item.Clicks));
+
+        const impressionsCtx = document.getElementById('ImpressionsChart').getContext('2d');
+        createChart(impressionsCtx, 'Impressions', laggedData.map(item => item.Impressions));
+
+        const rankingCtx = document.getElementById('RankingChart').getContext('2d');
+        createChart(rankingCtx, 'Ranking', laggedData.map(item => item.Ranking));
+
+        const laggedClicksCtx = document.getElementById('LaggedClicksChart').getContext('2d');
+        createChart(laggedClicksCtx, 'Lagged Clicks', laggedData.map(item => item.lag1_dclicks));
+
+        const laggedImpressionsCtx = document.getElementById('LaggedImpressionsChart').getContext('2d');
+        createChart(laggedImpressionsCtx, 'Lagged Impressions', laggedData.map(item => item.lag1_dimpressions));
+
+        const laggedRankingCtx = document.getElementById('LaggedRankingChart').getContext('2d');
+        createChart(laggedRankingCtx, 'Lagged Ranking', laggedData.map(item => item.lag1_dranking));
+    });
+</script>
+
+<script>
+    // Check if html2pdf.js is loaded
+    if (typeof html2pdf !== 'undefined') {
+        console.log('html2pdf.js is loaded successfully.');
+    } else {
+        console.log('Failed to load html2pdf.js.');
+    }
+
+    document.getElementById('download-pdf').addEventListener('click', function() {
+        console.log('Download button clicked.');
+        const element = document.getElementById('analysis-result');
+        
+        // Check if the element exists
+        if (element) {
+            console.log('Element found. Generating PDF...');
+            const options = {
+                margin:       0.5,
+                filename:     'analysis-result.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(options).save();
+        } else {
+            console.log('Element not found.');
+        }
+    });
+</script>
+
+{% endblock %}
