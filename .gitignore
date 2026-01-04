@@ -1,0 +1,12 @@
+# Create or edit .gitignore
+nano .gitignore
+```
+
+Add these lines:
+```
+*.pyc
+__pycache__/
+*.sqlite3
+db.sqlite3
+.env
+*.log

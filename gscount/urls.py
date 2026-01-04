@@ -2,7 +2,11 @@
 URL configuration for gscount project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
+<<<<<<< HEAD
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
+=======
+    https://docs.djangoproject.com/en/5.0/topics/http/urls/
+>>>>>>> origin/main
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -19,6 +23,7 @@ from django.urls import path, include
 from . import views
 from .views import style, team, partner
 
+<<<<<<< HEAD
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('count.urls')),
@@ -28,3 +33,27 @@ urlpatterns = [
     path('partner/', views.partner, name='partner'),
     path('', views.home, name='home'),
 ]
+=======
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('crm.urls')),
+    
+    path('team/', views.team, name='team'),
+    path('partner/', views.partner, name='partner'),
+    path('home/', views.home, name='home'),
+    path('test/', views.index, name='index'),
+    path('', views.home, name='home'),
+    
+
+
+    
+    # path('upload/', views.upload, name='upload'),
+    # path('register/', views.register, name='register'),
+    # path('logout/', views.logout, name='logout'),
+    # path('', include('gscount.urls')),
+    # path('run_adfuller/', views.run_adfuller, name='run_adfuller'),
+]
+
+>>>>>>> origin/main
