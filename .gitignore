@@ -5,5 +5,4 @@ db.sqlite3
 .env
 *.log
 venv/
-staticfiles/
 node_modules/
