@@ -26,3 +26,4 @@ statsmodels==0.14.2
 tablib==3.7.0
 tzdata==2026.2
 whitenoise==6.12.0
+python-dotenv==1.2.2
