@@ -1,14 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
-from . import views
-from .views import style, team, partner
+from count.views import home, team, partner, style
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda request: redirect('home'), name='index'),
     path('', include('count.urls')),
-    path('home/', views.home, name='home'),
-    path('team/', views.team, name='team'),
-    path('partner/', views.partner, name='partner'),
+    path('home/', home, name='home'),
+    path('team/', team, name='team'),
+    path('partner/', partner, name='partner'),
 ]

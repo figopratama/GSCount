@@ -312,3 +312,17 @@ def alldata(request):
 def listview(request):
     data = Date.objects.all()
     return render(request, 'home.html', {'data': data})
+
+
+# Page views (moved from gscount/views.py)
+def home(request):
+    return render(request, 'home.html')
+
+def team(request):
+    return render(request, 'team.html')
+
+def partner(request):
+    return render(request, 'partner.html')
+
+def style(request):
+    return render(request, 'style.html')
