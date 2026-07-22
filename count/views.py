@@ -256,7 +256,6 @@ def upload_and_count(request):
         }
 
 
-    print("Context keys:", context.keys())
     return render(request, 'count.html', context)
 
 
