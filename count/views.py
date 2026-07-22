@@ -149,8 +149,8 @@ def upload_and_count(request):
         # Append result to list for display (optional)
 
         all_data['lag1_dclicks'] = all_data['Clicks'].shift(1)
-        all_data['lag2_dclicks'] = all_data['lag1_dclicks'].shift(2)
-        all_data['lag3_dclicks'] = all_data['lag2_dclicks'].shift(3)
+        all_data['lag2_dclicks'] = all_data['Clicks'].shift(2)
+        all_data['lag3_dclicks'] = all_data['Clicks'].shift(3)
         all_data['lag1_dimpressions'] = all_data['Impressions'].shift(1)
         all_data['lag1_dranking'] = all_data['Ranking'].shift(1)
         all_data['lag1_dctr'] = all_data['CTR'].shift(1)
