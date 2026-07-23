@@ -443,23 +443,20 @@ GSCount
             });
         }
 
-        const clicksCtx = document.getElementById('ClicksChart').getContext('2d');
-        createChart(clicksCtx, 'Clicks', laggedData.map(item => item.Clicks));
-
-        const impressionsCtx = document.getElementById('ImpressionsChart').getContext('2d');
-        createChart(impressionsCtx, 'Impressions', laggedData.map(item => item.Impressions));
-
-        const rankingCtx = document.getElementById('RankingChart').getContext('2d');
-        createChart(rankingCtx, 'Ranking', laggedData.map(item => item.Ranking));
-
-        const laggedClicksCtx = document.getElementById('LaggedClicksChart').getContext('2d');
-        createChart(laggedClicksCtx, 'Lagged Clicks', laggedData.map(item => item.lag1_dclicks));
-
-        const laggedImpressionsCtx = document.getElementById('LaggedImpressionsChart').getContext('2d');
-        createChart(laggedImpressionsCtx, 'Lagged Impressions', laggedData.map(item => item.lag1_dimpressions));
-
-        const laggedRankingCtx = document.getElementById('LaggedRankingChart').getContext('2d');
-        createChart(laggedRankingCtx, 'Lagged Ranking', laggedData.map(item => item.lag1_dranking));
+        if (laggedData.length > 0) {
+            const clicksCtx = document.getElementById('ClicksChart').getContext('2d');
+            createChart(clicksCtx, 'Clicks', laggedData.map(item => item.Clicks));
+            const impressionsCtx = document.getElementById('ImpressionsChart').getContext('2d');
+            createChart(impressionsCtx, 'Impressions', laggedData.map(item => item.Impressions));
+            const rankingCtx = document.getElementById('RankingChart').getContext('2d');
+            createChart(rankingCtx, 'Ranking', laggedData.map(item => item.Ranking));
+            const laggedClicksCtx = document.getElementById('LaggedClicksChart').getContext('2d');
+            createChart(laggedClicksCtx, 'Lagged Clicks', laggedData.map(item => item.lag1_dclicks));
+            const laggedImpressionsCtx = document.getElementById('LaggedImpressionsChart').getContext('2d');
+            createChart(laggedImpressionsCtx, 'Lagged Impressions', laggedData.map(item => item.lag1_dimpressions));
+            const laggedRankingCtx = document.getElementById('LaggedRankingChart').getContext('2d');
+            createChart(laggedRankingCtx, 'Lagged Ranking', laggedData.map(item => item.lag1_dranking));
+        }
     });
 </script>
 

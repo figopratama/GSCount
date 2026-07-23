@@ -13,8 +13,6 @@ from django.http import HttpResponse
 
 import numpy as np
 import pandas as pd
-from numpy.random import randn
-from pandas import Series, DataFrame
 from scipy import stats
 import scipy.stats as scs
 import matplotlib.pyplot as plt
@@ -203,8 +201,8 @@ def upload_and_count(request):
         Clicks_conclusions = []
         Clicks_finalconclusions = []
         for idx, param in enumerate(Clicks_res.params.index):
-            coef = Clicks_res.params[idx]
-            t_stat = Clicks_res.tvalues[idx]
+            coef = Clicks_res.params[param]
+            t_stat = Clicks_res.tvalues[param]
             if coef > 0 and t_stat > 0:
                 conclusion = f"{param}: The variable is significant to the dependent variable."
                 Final_conclusion  = f"{param}, "
@@ -217,8 +215,8 @@ def upload_and_count(request):
         CTR_conclusions = []
         CTR_finalconclusions = []
         for idx, param in enumerate(CTR_res.params.index):
-            coef = CTR_res.params[idx]
-            t_stat = CTR_res.tvalues[idx]
+            coef = CTR_res.params[param]
+            t_stat = CTR_res.tvalues[param]
             if coef > 0 and t_stat > 0:
                 conclusion = f"{param}: The variable is significant to the dependent variable."
                 Final_conclusion  = f"{param}, "
